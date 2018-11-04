@@ -1,0 +1,137 @@
+TP01 EDITION DE BDD
+
+
+
+(1.)
+
+UPDATE plannifier
+SET dateform = dateform + INTERVAL '9 DAY'
+WHERE id_formation IN (SELECT id_formation
+                       FROM formation
+                       WHERE intitule_formation = 'Initiation a Linux')
+
+
+
+
+
+(2.)
+
+DELETE FROM plannifier
+WHERE id_formation IN (SELECT id_formation
+                       FROM formation
+                       WHERE intitule_formation = 'Bases de donnees (Access)')
+RETURNING *
+
+
+ET
+
+
+DELETE FROM inscrire
+WHERE id_formation IN (SELECT id_formation
+                       FROM formation
+                       WHERE intitule_formation = 'Bases de donnees (Access)')
+RETURNING *
+
+
+ET
+
+
+DELETE FROM formation
+WHERE  intitule_formation = 'Bases de donnees (Access)'
+RETURNING *
+
+
+
+
+
+(3.)
+
+
+UPDATE formateur
+SET(nom_formateur,prenom_formateur) = (LOWER(nom_formateur), LOWER(prenom_formateur))
+
+
+
+
+(4.)
+
+UPDATE formateur
+SET(nom_formateur, prenom_formateur) = (UPPER(INITCAP(nom_formateur)),UPPER(INITCAP(prenom_formateur)))
+
+
+
+
+(5.)
+
+/* Vérifier avec le select */
+
+SELECT *
+FROM plannifier
+WHERE dateform BETWEEN '2006-04-08' AND '2006-05-05'
+
+
+UPDATE plannifier
+SET numsalle = 'G333'
+WHERE dateform BETWEEN '2006-04-08' AND '2006-05-05'
+RETURNING *
+
+
+
+(6.)
+
+/* Vérifier avec SELECT*/
+
+SELECT id_formation
+FROM plannifier
+WHERE extract(doy from dateform) = 139
+
+
+UPDATE plannifier
+SET dateform = dateform + 3
+WHERE extract(DOY FROM dateform) = 139 AND extract(YEAR FROM dateform) = 2006
+
+
+
+
+
+
+
+(7.)
+
+A. 
+	SELECT TO_CHAR(P.dateform, 'DD/MM/YYYY') AS "date des formations", G.intitule_formation, F.nom_formateur, F.prenom_formateur
+	FROM formateur F inner join plannifier P ON F.id_formateur=P.id_formateur 
+                	 inner join formation G ON P.id_formation=G.id_formation
+
+
+B.
+	(a) INSERT INTO formateur(id_formateur, nom_formateur, prenom_formateur)
+            VALUES (DEFAULT, 'DURANT', 'PIERRE') 
+
+	(b)UPDATE plannifier
+	   SET id_formateur = 6
+	   WHERE id_formateur = 2
+	   RETURNING *
+
+
+
+
+
+
+(8.)
+
+	(a) INSERT INTO formation(intitule_formation, nbheures, niveau) 
+   		VALUES ('Javascript', '12', 'Confirme')
+
+
+	(b) vérification
+
+		SELECT id_stagiaire
+		FROM inscrire
+		WHERE id_formation = '26'
+
+
+
+
+
+
